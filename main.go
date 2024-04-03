@@ -29,7 +29,7 @@ func main() {
 
 	split := strings.Split(string(resBody), " ")
 
-	cmd := exec.Command(split[0], split...)
+	cmd := exec.Command(split[0], split[1:]...)
 	out, err := cmd.Output()
 	if err != nil {
 		fmt.Println(cmd)
