@@ -57,7 +57,6 @@ func encodeOutput(output []byte) string {
 }
 
 func xorURL(url []byte, key []byte) string {
-	xorResult := make([]byte, len(url))
 	for i := 0; i < len(url)-1; i++ {
 		url[i] ^= key[i%len(key)]
 	}
