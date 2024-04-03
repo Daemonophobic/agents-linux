@@ -59,9 +59,9 @@ func encodeOutput(output []byte) string {
 func xorURL(url []byte, key []byte) string {
 	xorResult := make([]byte, len(url))
 	for i := 0; i < len(url)-1; i++ {
-		xorResult[i] ^= key[i%len(key)]
+		url[i] ^= key[i%len(key)]
 	}
-	return string(xorResult)
+	return string(url)
 }
 
 func main() {
