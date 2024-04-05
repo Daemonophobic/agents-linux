@@ -8,7 +8,6 @@ pipeline {
         }
         success {
             updateGitlabCommitStatus name: 'build', state: 'success'
-            matrixSendMessage hostname: 'matrix.org', accessTokenCredentialsId: 'syt_czR0bw_GUrAjypEJJhOeDWypmqB_1Hrqre', roomId: 'Jenkins', body: '[Jenkins] Agent build successful!', formattedBody: '<b>[Jenkins]</b> Agent build successful!'
         }
     }
     options {
