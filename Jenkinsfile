@@ -10,7 +10,7 @@ pipeline {
         }
     }
     options {
-        gitLabConnection('GitLab connection')
+        gitLabConnection('Jenkins')
     }
 
     stages {
