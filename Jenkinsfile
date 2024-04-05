@@ -4,11 +4,10 @@ pipeline {
     post {
         failure {
             updateGitlabCommitStatus name: 'build', state: 'failed'
-
+            mail bcc: '', body: "<b>Build Succeeded</b><br>Project: ${env.JOB_NAME} <br>Build Number: ${env.BUILD_NUMBER} <br> URL de build: ${env.BUILD_URL}", cc: '', charset: 'UTF-8', from: 'jenkins@stickybits.red', mimeType: 'text/html', replyTo: '', subject: "ERROR CI: Project name -> ${env.JOB_NAME}", to: "jenkins";  
         }
         success {
             updateGitlabCommitStatus name: 'build', state: 'success'
-            mail bcc: '', body: "<b>Build Succeeded</b><br>Project: ${env.JOB_NAME} <br>Build Number: ${env.BUILD_NUMBER} <br> URL de build: ${env.BUILD_URL}", cc: '', charset: 'UTF-8', from: 'jenkins@stickybits.red', mimeType: 'text/html', replyTo: '', subject: "ERROR CI: Project name -> ${env.JOB_NAME}", to: "jenkins";  
         }
     }
     options {
