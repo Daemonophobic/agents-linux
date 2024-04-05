@@ -10,14 +10,14 @@ pipeline {
         }
     }
     options {
-        gitLabConnection('GitLab')
+        gitLabConnection('GitLab connection')
     }
 
     stages {
         stage('Prepare') {
             steps {
-                cleanWs()
                 updateGitlabCommitStatus name: 'build', state: 'running'
+                sh 'rm -rf releases'
                 sh 'mkdir -p releases'
                 echo "[*] Created releases directory"
             }
