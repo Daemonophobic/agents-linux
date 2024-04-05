@@ -9,6 +9,9 @@ pipeline {
             updateGitlabCommitStatus name: 'build', state: 'success'
         }
     }
+    options {
+        gitLabConnection('GitLab')
+    }
 
     stages {
         stage('Prepare') {
