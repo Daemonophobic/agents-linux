@@ -1,10 +1,23 @@
 pipeline {
     agent any
 
+    post {
+        failure {
+            updateGitlabCommitStatus name: 'build', state: 'failed'
+        }
+        success {
+            updateGitlabCommitStatus name: 'build', state: 'success'
+        }
+    }
+    options {
+        gitLabConnection('Jenkins')
+    }
+
     stages {
         stage('Prepare') {
             steps {
-                sh 'rm -rf releases'
+                cleanWs()
+                updateGitlabCommitStatus name: 'build', state: 'running'
                 sh 'mkdir -p releases'
                 echo "[*] Created releases directory"
             }
