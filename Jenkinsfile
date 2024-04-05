@@ -4,7 +4,8 @@ pipeline {
     stages {
         stage('Prepare') {
             steps {
-                sh 'mkdir releases'
+                sh 'rm -rf releases'
+                sh 'mkdir -p releases'
                 echo "[*] Created releases directory"
             }
         }
