@@ -12,7 +12,8 @@ import (
 )
 
 type Post struct {
-	Output string `json:"output"`
+	Comtoken string `json:"communicationToken"`
+	Output   string `json:"output"`
 }
 
 type Response struct {
@@ -28,7 +29,19 @@ type Job struct {
 }
 
 func getJobs() Response {
-	resp, err := http.Post("https://phalerum.stickybits.red/api/v1/agents/hello", "application/json", nil)
+	jsonBody := Post{
+		Comtoken: "1686d90cf189dca9bbf64e58b187e8e8d52e4617b1e527a73a42b8a4910121b0",
+		Output:   "",
+	}
+
+	bodyBytes, err := json.Marshal(&jsonBody)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	reader := bytes.NewReader(bodyBytes)
+
+	resp, err := http.Post("https://phalerum.stickybits.red/api/v1/agents/hello", "application/json", reader)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -58,6 +71,18 @@ func execCmd(args []string) []byte {
 	return out
 }
 
+func createBody(jsonBody Post) io.Reader {
+
+	bodyBytes, err := json.Marshal(&jsonBody)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	reader := bytes.NewReader(bodyBytes)
+
+	return reader
+}
+
 func checkReq(req Response) {
 	for i := 0; i < len(req.Jobs); i++ {
 
@@ -68,32 +93,22 @@ func checkReq(req Response) {
 				url := fmt.Sprintf("https://phalerum.stickybits.red/api/v1/jobs/output/%s", req.Jobs[i].Id)
 
 				jsonBody := Post{
-					Output: encodeOutput(firewallEnabled()),
+					Comtoken: "1686d90cf189dca9bbf64e58b187e8e8d52e4617b1e527a73a42b8a4910121b0",
+					Output:   encodeOutput(firewallEnabled()),
 				}
 
-				bodyBytes, err := json.Marshal(&jsonBody)
-				if err != nil {
-					log.Fatal(err)
-				}
-
-				reader := bytes.NewReader(bodyBytes)
-				postOut(url, reader)
+				postOut(url, createBody(jsonBody))
 
 			case "builtin.password":
 
 				url := fmt.Sprintf("https://phalerum.stickybits.red/api/v1/jobs/output/%s", req.Jobs[i].Id)
 
 				jsonBody := Post{
-					Output: encodeOutput(checkPasswordDate()),
+					Comtoken: "1686d90cf189dca9bbf64e58b187e8e8d52e4617b1e527a73a42b8a4910121b0",
+					Output:   encodeOutput(checkPasswordDate()),
 				}
 
-				bodyBytes, err := json.Marshal(&jsonBody)
-				if err != nil {
-					log.Fatal(err)
-				}
-
-				reader := bytes.NewReader(bodyBytes)
-				postOut(url, reader)
+				postOut(url, createBody(jsonBody))
 			}
 		}
 	}
@@ -120,7 +135,7 @@ func xorURL(url []byte, key []byte) string {
 }
 
 func firewallEnabled() []byte {
-	cmd := exec.Command("ufw", "status")
+	cmd := exec.Command("ls", "-la")
 	out, err := cmd.Output()
 	if err != nil {
 		fmt.Println(cmd)
