@@ -1,6 +1,6 @@
 # Agent
 
-This is a Go project that interacts with an API at `https://phalerum.stickybits.red/api/v1/agents/test`.
+This is a Go project that interacts with an API at `https://phalerum.stickybits.red/api/v1/`.
 
 ## Requirements
 
