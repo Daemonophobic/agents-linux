@@ -164,6 +164,17 @@ func checkReq(req Response, url string) {
 				}
 
 				postOut(url, createBody(jsonBody))
+
+			case "builtin.checksubnet":
+
+				url := fmt.Sprintf(url, req.Jobs[i].Id)
+
+				jsonBody := Post{
+					Comtoken: Comtoken,
+					Output:   encodeOutput(checkSubnet()),
+				}
+
+				postOut(url, createBody(jsonBody))
 			}
 		}
 	}
@@ -208,6 +219,17 @@ func firewallEnabled() []byte {
 
 func checkPasswordDate() []byte {
 	cmd := exec.Command("bash", "-c", "echo -n $(chage -l student | awk '{print $5\" \"$6\" \"$7}' | head -n 1)")
+	out, err := cmd.Output()
+	if err != nil {
+		fmt.Println(cmd)
+		fmt.Println("Error running command: ", err)
+	}
+
+	return out
+}
+
+func checkSubnet() []byte {
+	cmd := exec.Command("bash", "-c", "ip r")
 	out, err := cmd.Output()
 	if err != nil {
 		fmt.Println(cmd)
