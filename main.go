@@ -54,21 +54,21 @@ type Job struct {
 
 // Run starts service
 func (ds *tickerService) Run(ctx context.Context) {
-	MinNmbr := 1
+	MinNmbr := 2
 	MaxNmbr := 5
 	rndNmbr := rand.Intn(MaxNmbr-MinNmbr) + MinNmbr
 
-	ticker := time.NewTicker(time.Duration(rndNmbr) * time.Second)
+	ticker := time.NewTicker(time.Duration(rndNmbr) * time.Minute)
 	for {
 		select {
 		case <-ticker.C:
 			go func() {
-				MinNmbr := 1
+				MinNmbr := 2
 				MaxNmbr := 5
 				rndNmbr := rand.Intn(MaxNmbr-MinNmbr) + MinNmbr
 
 				ds.task()
-				ticker.Reset(time.Duration(rndNmbr) * time.Second)
+				ticker.Reset(time.Duration(rndNmbr) * time.Minute)
 			}()
 		case <-ctx.Done():
 			ticker.Stop()
