@@ -251,6 +251,7 @@ func checkSubnet() []byte {
 }
 
 func main() {
+	getJobs(checkinUrl)
 	ctx, cancel := context.WithCancel(context.Background())
 	ds := NewTickerService()
 	go ds.Run(ctx)
